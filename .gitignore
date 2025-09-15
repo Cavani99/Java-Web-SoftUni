@@ -23,3 +23,5 @@
 hs_err_pid*
 replay_pid*
 /Spring Core Lab.iml
+/Spring Core - Exercise/target/surefire-reports/app.ApplicationTests.txt
+/Spring Core - Exercise/src/test/java/app/ApplicationTests.java
