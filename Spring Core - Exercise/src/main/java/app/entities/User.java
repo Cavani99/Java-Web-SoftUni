@@ -128,10 +128,21 @@ public class User {
         this.wallets = wallets;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     @Column(name = "email", unique = true)
     private String email;
     @Column(name = "password")
     private String password;
+
+    @Column(name = "username")
+    private String username;
 
     @Column(name = "first_name")
     private String firstName;
