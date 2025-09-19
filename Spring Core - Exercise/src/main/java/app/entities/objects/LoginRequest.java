@@ -1,7 +1,22 @@
 package app.entities.objects;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class LoginRequest {
+
+    @NotBlank
+    @Size(min = 6, max = 24, message = "Username length must be between 6 and 26 symbols.")
     private String username;
+
+    @NotBlank
+    @Size(min = 6, max = 6, message = "Password must be exactly 6 symbols.")
     private String password;
 
     public String getUsername() {

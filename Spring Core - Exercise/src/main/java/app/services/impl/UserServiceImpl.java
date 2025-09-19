@@ -1,6 +1,7 @@
 package app.services.impl;
 
 import app.entities.User;
+import app.entities.enums.UserRole;
 import app.entities.objects.LoginRequest;
 import app.entities.objects.RegisterRequest;
 import app.repositories.UserRepo;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -19,12 +21,14 @@ public class UserServiceImpl implements UserService {
     private UserRepo userRepo;
     private WalletService walletService;
     private SubscriptionService subscriptionService;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserRepo userRepo, WalletService walletService, SubscriptionService subscriptionService) {
+    public UserServiceImpl(UserRepo userRepo, WalletService walletService, SubscriptionService subscriptionService, PasswordEncoder passwordEncoder) {
         this.userRepo = userRepo;
         this.walletService = walletService;
         this.subscriptionService = subscriptionService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -32,33 +36,33 @@ public class UserServiceImpl implements UserService {
         String username = registerRequest.getUsername();
 
         if (username.length() < 5) {
-            System.out.println("Username must be at least 5 characters");
-            return null;
+            throw new RuntimeException("Username must be at least 5 characters");
         }
 
         String password = registerRequest.getPassword();
 
         if (password.length() != 6) {
-            System.out.println("Password must be exactly 6 digits");
-            return null;
+            throw new RuntimeException("Password must be exactly 6 digits");
         }
 
         User user = new User();
         user.setUsername(username);
-        user.setPassword(password);
+        user.setPassword(passwordEncoder.encode(password));
         user.setCountry(registerRequest.getCountry());
+        user.setRole(UserRole.USER);
+        user.setActive(true);
+        user.setCreatedOn(LocalDateTime.now());
+        user.setUpdatedOn(LocalDateTime.now());
 
         Optional<User> userByName = userRepo.findByUsername(username);
         if (userByName.isPresent()) {
-            System.out.println("A User with this Username already exists");
-
-            return null;
+            throw new RuntimeException("A User with this Username already exists");
         }
 
         userRepo.save(user);
 
 
-        return null;
+        return user;
     }
 
     @Override
@@ -66,27 +70,29 @@ public class UserServiceImpl implements UserService {
         String username = loginRequest.getUsername();
 
         if (username.length() < 5) {
-            System.out.println("Username must be at least 5 characters");
-            return null;
+            throw new RuntimeException("Username must be at least 5 characters");
         }
 
         String password = loginRequest.getPassword();
 
         if (password.length() != 6) {
-            System.out.println("Password must be exactly 6 digits");
-            return null;
+            throw new RuntimeException("Password must be exactly 6 digits");
         }
 
         User user = new User();
         user.setUsername(username);
-        user.setPassword(password);
+        user.setPassword(passwordEncoder.encode(password));
 
-        Optional<User> userByName = userRepo.findByUsernameAndPassword(username, password);
+        Optional<User> userByName = userRepo.findByUsername(username);
         if (userByName.isPresent()) {
+            String userPass = userByName.get().getPassword();
+            if (!passwordEncoder.matches(password, userPass)) {
+                throw new RuntimeException("A User with this Username and Password does not exist");
+            }
+
             return user;
         }
 
-        System.out.println("A User with this Username and Password does not exist");
-        return null;
+        throw new RuntimeException("A User with this Username and Password does not exist");
     }
 }
