@@ -25,3 +25,5 @@ replay_pid*
 /Spring Core Lab.iml
 /Spring Core - Exercise/target/surefire-reports/app.ApplicationTests.txt
 /Spring Core - Exercise/src/test/java/app/ApplicationTests.java
+/Spring MVC with Thymeleaf Basics - Lab/target/surefire-reports/TEST-main.ApplicationTests.xml
+/.idea/inspectionProfiles/Project_Default.xml
