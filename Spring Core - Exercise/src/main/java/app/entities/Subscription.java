@@ -89,7 +89,7 @@ public class Subscription {
         this.completedOn = completedOn;
     }
 
-    @ManyToOne(optional = false, cascade = CascadeType.ALL,
+    @ManyToOne(optional = false,
             fetch = FetchType.EAGER)
     @JoinColumn(name = "owner_id", referencedColumnName = "id")
     private User owner;

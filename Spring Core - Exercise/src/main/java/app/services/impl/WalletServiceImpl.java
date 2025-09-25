@@ -30,7 +30,7 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
-    public void createNewWaller(User user) {
+    public void createNewWallet(User user) {
         Wallet wallet = new Wallet();
         wallet.setBalance(BigDecimal.valueOf(20));
         wallet.setStatus(WalletStatus.ACTIVE);
@@ -40,6 +40,13 @@ public class WalletServiceImpl implements WalletService {
         wallet.setUpdatedOn(LocalDateTime.now());
 
         walletRepo.save(wallet);
+    }
+
+    @Override
+    public Wallet getWalletByUser(User user) {
+        Optional<Wallet> wallet = walletRepo.findByOwnerAndStatus(user, WalletStatus.ACTIVE);
+
+        return wallet.orElse(null);
     }
 
     @Override

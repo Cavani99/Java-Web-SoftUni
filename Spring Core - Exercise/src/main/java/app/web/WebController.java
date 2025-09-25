@@ -1,6 +1,8 @@
 package app.web;
 
+import app.entities.Subscription;
 import app.entities.User;
+import app.entities.Wallet;
 import app.entities.objects.LoginRequest;
 import app.entities.objects.RegisterRequest;
 import app.services.SubscriptionService;
@@ -8,6 +10,7 @@ import app.services.TransactionService;
 import app.services.UserService;
 import app.services.WalletService;
 import jakarta.validation.Valid;
+import lombok.extern.java.Log;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class WebController {
@@ -44,6 +48,13 @@ public class WebController {
     public ModelAndView getHome() {
         ModelAndView modelAndView = new ModelAndView("home.html");
 
+        User user = userService.getActiveUser();
+        Wallet wallet = walletService.getWalletByUser(user);
+        Subscription subscription = subscriptionService.getSubscriptionByUser(user);
+        modelAndView.addObject("user", user);
+        modelAndView.addObject("wallet", wallet);
+        modelAndView.addObject("subscription", subscription);
+
         return modelAndView;
     }
 
@@ -57,12 +68,30 @@ public class WebController {
     }
 
     @PostMapping("/login")
-    public ModelAndView login(@Valid @ModelAttribute("user") User user) {
-        LoginRequest loginRequest = new LoginRequest(user.getUsername(), user.getPassword());
+    public ModelAndView login(@Valid @ModelAttribute("user") LoginRequest user, BindingResult result) {
 
-        User loggedUser = userService.login(loginRequest);
+        if (result.hasErrors()) {
+            ModelAndView mav = new ModelAndView("login");
+            mav.addObject("user", user);
+            return mav;
+        }
+
+        userService.login(new LoginRequest(
+                user.getUsername(),
+                user.getPassword()
+        ));
+
+        userService.setInactive();
+        userService.setActiveUser(user.getUsername());
 
         return new ModelAndView("redirect:/home");
+    }
+
+    @GetMapping("/logout")
+    public ModelAndView logout() {
+        userService.setInactive();
+
+        return new ModelAndView("redirect:/");
     }
 
     @GetMapping("/register")

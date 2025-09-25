@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -60,7 +61,10 @@ public class UserServiceImpl implements UserService {
         }
 
         userRepo.save(user);
-
+        User savedUser = userRepo.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        walletService.createNewWallet(savedUser);
+        subscriptionService.createDefaultSubscription(savedUser);
 
         return user;
     }
@@ -94,5 +98,32 @@ public class UserServiceImpl implements UserService {
         }
 
         throw new RuntimeException("A User with this Username and Password does not exist");
+    }
+
+    @Override
+    public void setInactive() {
+        List<User> userList = userRepo.findAll();
+
+        for (User user : userList) {
+            user.setActive(false);
+            userRepo.save(user);
+        }
+    }
+
+    @Override
+    public void setActiveUser(String username) {
+        Optional<User> user = userRepo.findByUsername(username);
+
+        if (user.isPresent()) {
+            user.get().setActive(true);
+            userRepo.save(user.get());
+        }
+    }
+
+    @Override
+    public User getActiveUser() {
+        Optional<User> user = userRepo.findByIsActive(true);
+
+        return user.orElse(null);
     }
 }

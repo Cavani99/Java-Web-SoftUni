@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class SubscriptionServiceImpl implements SubscriptionService {
@@ -33,5 +34,12 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         subscription.setCreatedOn(LocalDateTime.now());
 
         subscriptionRepo.save(subscription);
+    }
+
+    @Override
+    public Subscription getSubscriptionByUser(User user) {
+        Optional<Subscription> subscription = subscriptionRepo.findByOwner(user);
+
+        return subscription.orElse(null);
     }
 }

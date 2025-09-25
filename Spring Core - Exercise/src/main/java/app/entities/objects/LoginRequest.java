@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 public class LoginRequest {
 
     @NotBlank
-    @Size(min = 6, max = 24, message = "Username length must be between 6 and 26 symbols.")
+    @Size(min = 5, max = 24, message = "Username length must be between 6 and 24 symbols.")
     private String username;
 
     @NotBlank

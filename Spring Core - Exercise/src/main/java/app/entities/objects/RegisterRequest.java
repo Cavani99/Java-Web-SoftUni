@@ -16,7 +16,7 @@ public class RegisterRequest {
     private Country country;
 
     @NotBlank
-    @Size(min = 6, max = 24, message = "Username length must be between 6 and 24 symbols.")
+    @Size(min = 5, max = 24, message = "Username length must be between 6 and 24 symbols.")
     private String username;
 
     public Country getCountry() {
