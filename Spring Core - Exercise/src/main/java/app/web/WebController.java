@@ -1,6 +1,7 @@
 package app.web;
 
 import app.entities.Subscription;
+import app.entities.Transaction;
 import app.entities.User;
 import app.entities.Wallet;
 import app.entities.objects.LoginRequest;
@@ -49,7 +50,7 @@ public class WebController {
         ModelAndView modelAndView = new ModelAndView("home.html");
 
         User user = userService.getActiveUser();
-        Wallet wallet = walletService.getWalletByUser(user);
+        Wallet wallet = walletService.getActiveWalletByUser(user);
         Subscription subscription = subscriptionService.getSubscriptionByUser(user);
         modelAndView.addObject("user", user);
         modelAndView.addObject("wallet", wallet);
@@ -131,6 +132,15 @@ public class WebController {
     @GetMapping("/wallets")
     public ModelAndView getWallets() {
         ModelAndView modelAndView = new ModelAndView("wallets.html");
+
+        User user = userService.getActiveUser();
+        List<Wallet> wallets = walletService.getWalletsByUser(user);
+        for (Wallet wallet : wallets) {
+            List<Transaction> transactions = transactionService.getTransactionByReceiver(String.valueOf(wallet.getId()));
+            wallet.setTransactions(transactions);
+        }
+
+        modelAndView.addObject("wallets", wallets);
 
         return modelAndView;
     }

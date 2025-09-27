@@ -1,9 +1,12 @@
 package app.services.impl;
 
+import app.entities.Transaction;
 import app.repositories.TransactionRepo;
 import app.services.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class TransactionServiceImpl implements TransactionService {
@@ -13,5 +16,10 @@ public class TransactionServiceImpl implements TransactionService {
     @Autowired
     public TransactionServiceImpl(TransactionRepo transactionRepo) {
         this.transactionRepo = transactionRepo;
+    }
+
+    @Override
+    public List<Transaction> getTransactionByReceiver(String receiver) {
+        return transactionRepo.findByReceiver(receiver);
     }
 }

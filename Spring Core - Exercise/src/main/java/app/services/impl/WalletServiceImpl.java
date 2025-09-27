@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -43,10 +44,15 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
-    public Wallet getWalletByUser(User user) {
+    public Wallet getActiveWalletByUser(User user) {
         Optional<Wallet> wallet = walletRepo.findByOwnerAndStatus(user, WalletStatus.ACTIVE);
 
         return wallet.orElse(null);
+    }
+
+    @Override
+    public List<Wallet> getWalletsByUser(User user) {
+        return walletRepo.findByOwner(user);
     }
 
     @Override

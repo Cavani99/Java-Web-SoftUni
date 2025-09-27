@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -91,6 +92,17 @@ public class Wallet {
 
     @Column(name = "updated_on")
     private LocalDateTime updatedOn;
+
+    @Transient
+    private List<Transaction> transactions;
+
+    public List<Transaction> getTransactions() {
+        return transactions;
+    }
+
+    public void setTransactions(List<Transaction> transactions) {
+        this.transactions = transactions;
+    }
 
     public Wallet() {
 
