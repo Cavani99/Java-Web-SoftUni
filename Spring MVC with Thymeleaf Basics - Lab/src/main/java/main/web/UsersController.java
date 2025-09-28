@@ -2,6 +2,7 @@ package main.web;
 
 import jakarta.validation.Valid;
 import main.model.User;
+import main.model.RegisterRequestUser;
 import main.repository.UserRepository;
 import main.service.UserService;
 import org.springframework.stereotype.Controller;
@@ -57,7 +58,7 @@ public class UsersController {
     }
 
     @PostMapping("/new-user")
-    public ModelAndView registerUser(@Valid @ModelAttribute("user") User user,
+    public ModelAndView registerUser(@Valid @ModelAttribute("user") RegisterRequestUser user,
                                      BindingResult result) {
         if (user.getUsername() == null || user.getUsername().isBlank()) {
             result.rejectValue("username", "error.username", "Username is required!");
@@ -88,7 +89,16 @@ public class UsersController {
             return new ModelAndView("new-user.html").addObject("user", user);
         }
 
-        userRepository.save(user);
+        User userObject = new User();
+        userObject.setUsername(user.getUsername());
+        userObject.setFirstName(user.getUsername());
+        userObject.setCountry(user.getCountry());
+        userObject.setBalance(user.getBalance());
+        userObject.setPhoneNumber(user.getPhoneNumber());
+        userObject.setAddress(user.getAddress());
+        userObject.setProfilePictureUrl(user.getProfilePictureUrl());
+
+        userRepository.save(userObject);
 
         return new ModelAndView("redirect:/users");
     }

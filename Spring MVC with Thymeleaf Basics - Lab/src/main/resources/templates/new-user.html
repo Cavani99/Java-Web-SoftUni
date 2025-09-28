@@ -113,7 +113,7 @@
 
 <div class="main-container">
 
-    <form class="form-card" method="POST" th:action="@{new-user}" th:object="${user}">
+    <form class="form-card" th:method="post" th:action="@{new-user}" th:object="${user}">
         <div>
             <label for="username">Username</label>
             <input type="text" id="username" th:field="*{username}">
