@@ -44,6 +44,19 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
+    public void createDefaultWallet(User user) {
+        Wallet wallet = new Wallet();
+        wallet.setBalance(BigDecimal.valueOf(0));
+        wallet.setStatus(WalletStatus.INACTIVE);
+        wallet.setCurrency("EUR");
+        wallet.setUser(user);
+        wallet.setCreatedOn(LocalDateTime.now());
+        wallet.setUpdatedOn(LocalDateTime.now());
+
+        walletRepo.save(wallet);
+    }
+
+    @Override
     public Wallet getActiveWalletByUser(User user) {
         Optional<Wallet> wallet = walletRepo.findByOwnerAndStatus(user, WalletStatus.ACTIVE);
 
@@ -52,7 +65,7 @@ public class WalletServiceImpl implements WalletService {
 
     @Override
     public List<Wallet> getWalletsByUser(User user) {
-        return walletRepo.findByOwner(user);
+        return walletRepo.findByOwnerOrderByCreatedOn(user);
     }
 
     @Override
@@ -72,10 +85,11 @@ public class WalletServiceImpl implements WalletService {
             transaction.setStatus(TransactionStatus.SUCCEEDED);
             transaction.setCurrency("EUR");
             transaction.setType(TransactionType.DEPOSIT);
-            transaction.setSender(wallet.getUser().getUsername());
-            transaction.setReceiver(wallet.getUser().getUsername());
+            transaction.setSender(wallet.getId().toString());
+            transaction.setReceiver(wallet.getId().toString());
             transaction.setBalanceLeft(wallet.getBalance());
             transaction.setUser(wallet.getUser());
+            transaction.setDescription("Add " + amount + " to wallet!");
             transaction.setCreatedOn(LocalDateTime.now());
 
             transactionRepo.save(transaction);

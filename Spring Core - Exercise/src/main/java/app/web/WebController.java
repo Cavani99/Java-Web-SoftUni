@@ -11,17 +11,14 @@ import app.services.TransactionService;
 import app.services.UserService;
 import app.services.WalletService;
 import jakarta.validation.Valid;
-import lombok.extern.java.Log;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
+import java.util.UUID;
 
 @Controller
 public class WebController {
@@ -143,6 +140,24 @@ public class WebController {
         modelAndView.addObject("wallets", wallets);
 
         return modelAndView;
+    }
+
+    @PostMapping("/wallets")
+    public ModelAndView createWallet() {
+        User user = userService.getActiveUser();
+        walletService.createDefaultWallet(user);
+
+        return new ModelAndView("redirect:/wallets");
+    }
+
+    @PostMapping("/wallets/{id}/balance")
+    public ModelAndView walletUseTopUp(
+            @PathVariable("id") UUID walletId,
+            @RequestParam("top-up-amount") BigDecimal amount) {
+
+        walletService.topUp(walletId, amount);
+
+        return new ModelAndView("redirect:/wallets");
     }
 
     @GetMapping("/subscriptions")

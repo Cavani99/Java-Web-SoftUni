@@ -12,6 +12,8 @@ public interface WalletService {
 
     void createNewWallet(User user);
 
+    void createDefaultWallet(User user);
+
     Wallet getActiveWalletByUser(User user);
     List<Wallet> getWalletsByUser(User user);
 
