@@ -146,7 +146,14 @@
         <div class="wallet-block" th:each="wallet : ${wallets}">
             <div class="default-label-box">
                 <p>Standard Wallet</p>
-                <p class="active-wallet-status" th:text="${wallet.status}">ACTIVE</p>
+
+                <th:block th:switch="${wallet.status.name()}">
+                    <p th:case="'ACTIVE'" class="active-wallet-status"
+                       th:text="${wallet.status}"></p>
+                    <p th:case="'INACTIVE'" class="inactive-wallet-status"
+                       th:text="${wallet.status}"></p>
+                </th:block>
+
             </div>
 
             <div class="wallet-balance">
@@ -166,7 +173,8 @@
                         </svg>
                     </button>
                 </form>
-                <form th:action="@{/wallets/{id}(id=${wallet.id})}" method="post"><input type="hidden" name="_method" value="PUT">
+                <form th:action="@{/wallets/{id}(id=${wallet.id})}" method="post"><input type="hidden" name="_method"
+                                                                                         value="PUT">
                     <button type="submit" class="profile-actions-button">
                         <p>Switch</p>
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
