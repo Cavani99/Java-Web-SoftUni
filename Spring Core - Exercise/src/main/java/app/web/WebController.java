@@ -160,6 +160,15 @@ public class WebController {
         return new ModelAndView("redirect:/wallets");
     }
 
+    @PostMapping("/wallets/{id}")
+    public ModelAndView changeWalletStatus(
+            @PathVariable("id") UUID walletId) {
+
+        walletService.changeStatus(walletId);
+
+        return new ModelAndView("redirect:/wallets");
+    }
+
     @GetMapping("/subscriptions")
     public ModelAndView getSubscriptions() {
         ModelAndView modelAndView = new ModelAndView("upgrade.html");

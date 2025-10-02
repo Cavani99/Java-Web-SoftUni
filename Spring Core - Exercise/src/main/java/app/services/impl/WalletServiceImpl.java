@@ -143,4 +143,21 @@ public class WalletServiceImpl implements WalletService {
         return transaction;
 
     }
+
+    @Override
+    public void changeStatus(UUID walletId) {
+        Optional<Wallet> currentWallet = walletRepo.findById(walletId);
+
+        if (currentWallet.isPresent()) {
+            Wallet wallet = currentWallet.get();
+
+            if (wallet.getStatus().equals(WalletStatus.ACTIVE)) {
+                wallet.setStatus(WalletStatus.INACTIVE);
+            } else {
+                wallet.setStatus(WalletStatus.ACTIVE);
+            }
+
+            walletRepo.save(wallet);
+        }
+    }
 }

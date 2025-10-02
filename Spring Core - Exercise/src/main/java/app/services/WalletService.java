@@ -12,6 +12,8 @@ public interface WalletService {
 
     void createNewWallet(User user);
 
+    void changeStatus(UUID walletId);
+
     void createDefaultWallet(User user);
 
     Wallet getActiveWalletByUser(User user);
