@@ -201,6 +201,11 @@ public class WebController {
     public ModelAndView getTransactions() {
         ModelAndView modelAndView = new ModelAndView("transactions.html");
 
+        User user = userService.getActiveUser();
+        List<Transaction> transactions = transactionService.getTransactionByOwner(user);
+
+        modelAndView.addObject("transactions", transactions);
+
         return modelAndView;
     }
 

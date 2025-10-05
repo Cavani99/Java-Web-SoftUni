@@ -1,6 +1,7 @@
 package app.repositories;
 
 import app.entities.Transaction;
+import app.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,4 +12,5 @@ public interface TransactionRepo extends JpaRepository<Transaction, Long> {
 
     List<Transaction> findByReceiver(String receiver);
     List<Transaction> findBySender(String sender);
+    List<Transaction> findByOwner(User owner);
 }
