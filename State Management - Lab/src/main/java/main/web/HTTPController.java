@@ -1,7 +1,9 @@
 package main.web;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -96,6 +98,19 @@ public class HTTPController {
         }
 
         modelAndView.addObject("header", value);
+
+        return modelAndView;
+    }
+
+    @GetMapping("/custom-error")
+    public ModelAndView getError(HttpServletRequest request) {
+        String error = (String) request.getAttribute("interceptorError");
+        if (error == null) {
+            error = "Error intercepted!";
+        }
+
+        ModelAndView modelAndView = new ModelAndView("response.html");
+        modelAndView.addObject("header", error);
 
         return modelAndView;
     }
